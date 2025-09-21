@@ -1,0 +1,16 @@
+services:
+  database:
+    image: postgres:15
+    container_name: auth_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: joaountura
+      POSTGRES_PASSWORD: joaountura@dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+
