@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import dev.joaountura.auth.user.models.Users;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.Instant;
@@ -14,9 +15,9 @@ abstract public class TokenAbstract {
     @Value("${jwt.issuer}")
     private  String issuer;
 
-    @Value("${jwt.secret}")
-    private String secret;
+    protected String secret;
 
+    @Getter
     public int duration;
 
     private Algorithm algorithm;
@@ -44,7 +45,4 @@ abstract public class TokenAbstract {
 
     }
 
-    public int getDuration(){
-        return this.duration;
-    }
 }

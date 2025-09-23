@@ -1,7 +1,7 @@
 package dev.joaountura.auth.auth;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import dev.joaountura.auth.auth.Cookies.CookieComponent;
-import dev.joaountura.auth.auth.Tokens.jwtToken.JWTComponent;
+import dev.joaountura.auth.auth.Tokens.JwtToken.JWTComponent;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;

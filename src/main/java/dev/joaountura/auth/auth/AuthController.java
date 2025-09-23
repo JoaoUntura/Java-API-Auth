@@ -1,8 +1,8 @@
 package dev.joaountura.auth.auth;
 
 import dev.joaountura.auth.auth.Cookies.CookieComponent;
-import dev.joaountura.auth.auth.Tokens.jwtToken.JWTComponent;
-import dev.joaountura.auth.auth.Tokens.refreshToken.RefreshTokenComponent;
+import dev.joaountura.auth.auth.Tokens.JwtToken.JWTComponent;
+import dev.joaountura.auth.auth.Tokens.RefreshToken.RefreshTokenComponent;
 import dev.joaountura.auth.user.models.Users;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;

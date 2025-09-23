@@ -1,4 +1,4 @@
-package dev.joaountura.auth.auth.Tokens.refreshToken;
+package dev.joaountura.auth.auth.Tokens.RefreshToken;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import dev.joaountura.auth.auth.Tokens.TokenAbstract;
@@ -9,6 +9,7 @@ import dev.joaountura.auth.exceptions.refreshTokenExceptions.RefreshTokenNotFoun
 import dev.joaountura.auth.user.models.Users;
 import dev.joaountura.auth.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -25,8 +26,10 @@ public class RefreshTokenComponent extends TokenAbstract {
     @Autowired
     private UserRepository userRepository;
 
-    public RefreshTokenComponent() {
+    public RefreshTokenComponent(@Value("refresh.secret") String refreshSecret)
+    {
         this.duration = 86400 * 15;
+        this.secret = refreshSecret;
     }
 
     public RefreshToken createRefresh(Users users){

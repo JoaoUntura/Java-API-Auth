@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserServices {
@@ -36,6 +37,10 @@ public class UserServices {
 
     public Users findUserByEmail(String email){
         return userRepository.findByEmail(email);
+    }
+
+    public Users findUserByUUID(UUID externalId){
+        return userRepository.findByExternalId(externalId);
     }
 
 

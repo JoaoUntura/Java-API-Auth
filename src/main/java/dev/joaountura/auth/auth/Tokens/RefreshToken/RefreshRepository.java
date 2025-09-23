@@ -1,4 +1,4 @@
-package dev.joaountura.auth.auth.Tokens.refreshToken;
+package dev.joaountura.auth.auth.Tokens.RefreshToken;
 
 
 import dev.joaountura.auth.user.models.Users;

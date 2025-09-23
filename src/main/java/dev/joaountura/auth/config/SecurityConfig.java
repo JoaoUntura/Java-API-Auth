@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST,"/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/refresh").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/login/2fa").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/user").hasRole(Roles.admin.toString())
                         .anyRequest().authenticated()
                 )

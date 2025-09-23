@@ -1,4 +1,5 @@
 package dev.joaountura.auth.user.models;
+import dev.joaountura.auth.auth.DeviceFingerPrint.DeviceFingerPrint;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,8 +39,11 @@ public class Users implements UserDetails {
     private LocalDateTime dateCreated = LocalDateTime.now();
 
     @Builder.Default
+    @Enumerated(EnumType.ORDINAL)
     private Roles role = Roles.commom;
 
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    private List<DeviceFingerPrint> deviceFingerPrints;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
