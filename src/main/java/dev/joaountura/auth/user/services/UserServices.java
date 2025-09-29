@@ -7,6 +7,7 @@ import dev.joaountura.auth.user.models.UserResponseDTO;
 import dev.joaountura.auth.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class UserServices {
     }
 
     public Users findUserByEmail(String email){
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
     }
 
     public Users findUserByUUID(UUID externalId){

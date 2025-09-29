@@ -2,6 +2,7 @@ package dev.joaountura.auth.auth.Tokens.TwoFA;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.joaountura.auth.auth.Tokens.TokenAbstract;
+import dev.joaountura.auth.email.services.EmailServices;
 import dev.joaountura.auth.user.models.Users;
 import jakarta.servlet.ServletException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class TwoFAServices extends TokenAbstract {
     private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
+    private EmailServices emailServices;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     public TwoFAServices(@Value("2fa.secret") String twoJwtSecret) {
@@ -38,21 +42,21 @@ public class TwoFAServices extends TokenAbstract {
     public void sendTwoFaCode(Users users){
         int code = generateCode();
 
-        System.out.println(code);//envia email
+        emailServices.send2FAEmail(code, users);
 
         storeTwoFaRedis(hashCode(code), users.getId());
 
     }
 
-    public void compareTwoFaCodes(Users users, String userTwoFaAtempt) throws Exception {
+    public void compareTwoFaCodes(Users users, String userTwoFaAttempt) throws Exception {
 
         TwoFA twoFA = getTwoFA(users);
 
         if (twoFA == null) throw new ServletException("2fa not Found");
-
+        if (twoFA.getAttempts() > 3) throw new ServletException("Max Atempts");
         if(Instant.now().isAfter(twoFA.getExpiresAt())) throw new ServletException("Expired 2fa");
 
-        boolean matches = passwordEncoder.matches(userTwoFaAtempt, twoFA.getHashedCode());
+        boolean matches = passwordEncoder.matches(userTwoFaAttempt, twoFA.getHashedCode());
 
         if (!matches){
             twoFA.setAttempts(twoFA.getAttempts() + 1);

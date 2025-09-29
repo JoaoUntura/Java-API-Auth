@@ -19,14 +19,13 @@ public class DeviceFingerPrint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
     private String fingerPrint;
 
     @Builder.Default
     private LocalDateTime created_at = LocalDateTime.now();
 
     @ManyToOne
-    @JoinColumn(name="user_id", unique = true)
+    @JoinColumn(name="user_id")
     private Users users;
 
 }

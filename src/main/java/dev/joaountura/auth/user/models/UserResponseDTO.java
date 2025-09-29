@@ -14,7 +14,7 @@ public class UserResponseDTO {
 
     private String email;
     private UUID externalId;
-    private LocalDateTime dateCreated;
+    private String dateCreated;
     private Roles role;
 
 }

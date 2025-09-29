@@ -3,6 +3,7 @@ package dev.joaountura.auth.auth.Cookies;
 
 
 import dev.joaountura.auth.auth.Tokens.JwtToken.JWTComponent;
+
 import dev.joaountura.auth.auth.Tokens.RefreshToken.RefreshTokenComponent;
 import dev.joaountura.auth.auth.Tokens.TwoFA.TwoFAServices;
 import jakarta.servlet.http.Cookie;
@@ -19,6 +20,7 @@ public class CookieComponent {
     @Autowired
     private JWTComponent jwtComponent;
 
+
     @Autowired
     private TwoFAServices twoFAServices;
 
@@ -28,6 +30,7 @@ public class CookieComponent {
     public final static String cookieJWTName = "jwtToken";
     public final static String cookieRefreshName = "refreshToken";
     public final static String cookieTwoFaName = "twoFaJwtToken";
+    public final static String cookieLoginTries = "loginTriesToken";
 
     public Cookie generateJWTCookie(String jwtToken){
 
@@ -60,5 +63,7 @@ public class CookieComponent {
 
         return cookie;
     }
+
+
 
 }

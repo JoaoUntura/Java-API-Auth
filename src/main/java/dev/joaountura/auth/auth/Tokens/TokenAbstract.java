@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import dev.joaountura.auth.user.models.Users;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.ServletException;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -38,11 +39,31 @@ abstract public class TokenAbstract {
                 .sign(this.algorithm);
     }
 
+    public String encodeNoUserToken(String subject, int remainingTime){
+
+        Instant expirationTime = Instant.now().plusSeconds(this.duration - remainingTime);
+
+
+
+        return JWT.create()
+                .withIssuer(this.issuer)
+                .withSubject(subject)
+                .withExpiresAt(expirationTime)
+                .sign(this.algorithm);
+    }
+
+
     public DecodedJWT verifyAndDecode(String token){
         JWTVerifier verifier = JWT.require(this.algorithm).withIssuer(this.issuer).build();
 
         return verifier.verify(token);
 
+    }
+
+    public void verifyExpiration(DecodedJWT decodedJWT) throws ServletException {
+        if(Instant.now().isAfter(decodedJWT.getExpiresAtAsInstant())){
+            throw new ServletException("Expired JWT Token");
+        }
     }
 
 }

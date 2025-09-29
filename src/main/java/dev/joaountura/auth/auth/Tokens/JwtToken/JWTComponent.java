@@ -19,10 +19,6 @@ public class JWTComponent extends TokenAbstract {
 
     }
 
-    public void verifyExpiration(DecodedJWT decodedJWT) throws ServletException {
-        if(Instant.now().isAfter(decodedJWT.getExpiresAtAsInstant())){
-            throw new ServletException("Expired JWT Token");
-        }
-    }
+
 
 }

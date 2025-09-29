@@ -1,4 +1,5 @@
 package dev.joaountura.auth.auth.DeviceFingerPrint;
+import dev.joaountura.auth.email.services.EmailServices;
 import dev.joaountura.auth.user.models.Users;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -17,6 +18,8 @@ public class DeviceFingerPrintServices {
 
     private final static Logger logger = LoggerFactory.getLogger(DeviceFingerPrintServices.class);
 
+    @Autowired
+    private EmailServices emailServices;
 
 
     @Autowired

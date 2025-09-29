@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
@@ -26,7 +27,7 @@ public class UserMapper {
 
         return users.stream().map(user -> (UserResponseDTO.builder()
                 .email(user.getEmail())
-                .dateCreated(user.getDateCreated())
+                .dateCreated(user.getDateCreated().format(DateTimeFormatter.ISO_LOCAL_TIME))
                 .externalId(user.getExternalId())
                 .role(user.getRole())
                 .build())).toList();

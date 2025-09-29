@@ -1,5 +1,6 @@
 package dev.joaountura.auth.exceptions;
 
+import dev.joaountura.auth.exceptions.authExceptions.TooManyRequests;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,13 +23,20 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-        logger.error("DataIntegrityViolationException: {}", ex.getMessage(), ex); //
+        logger.error("DataIntegrityViolationException: {}", ex.getMessage()); //
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Data");
+    }
+
+
+    @ExceptionHandler(TooManyRequests.class)
+    public ResponseEntity<String> handleTooManyRequests(TooManyRequests ex) {
+        logger.error("TooManyRequests: {}", ex.getMessage()); //
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body("Too Many attempts, try again latter");
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneric(Exception ex) {
-        logger.error("Exception", ex); //
+        logger.error("Exception", ex.getMessage()); //
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
     }
 }

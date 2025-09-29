@@ -3,6 +3,7 @@ import dev.joaountura.auth.auth.Cookies.CookieComponent;
 import dev.joaountura.auth.auth.DeviceFingerPrint.DeviceFingerPrintServices;
 import dev.joaountura.auth.login.models.Login2FADTO;
 import dev.joaountura.auth.login.models.LoginDTO;
+import dev.joaountura.auth.login.services.LoginAttemptService;
 import dev.joaountura.auth.login.services.LoginServices;
 import dev.joaountura.auth.user.models.Users;
 import dev.joaountura.auth.user.services.UserServices;
@@ -25,20 +26,29 @@ public class LoginController {
     private LoginServices loginServices;
 
     @Autowired
+    private LoginAttemptService loginAttemptService;
+
+    @Autowired
     private CookieComponent cookieComponent;
 
 
     @PostMapping
-    public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response){
+    public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        String fingerPrint = loginServices.generateFingerPrint(request);
+
+        loginAttemptService.checkAttemptsByFingerPrint(fingerPrint);
 
         Users user = loginServices.loginUserValidationService(loginDTO);
-        loginServices.deviceFingerPrintValidation(request, user);
+
+        loginServices.deviceFingerPrintValidation(fingerPrint, user);
+
         loginServices.sendTwoFaCode(user);
         String twoFaJwtToken = loginServices.generate2faToken(user);
         Cookie twoFaCookie = cookieComponent.generateTwoFaCookie(twoFaJwtToken);
         response.addCookie(twoFaCookie);
 
-        return ResponseEntity.status(HttpStatus.OK).body("Code send to Email " + loginDTO.getEmail());
+
+        return ResponseEntity.status(HttpStatus.OK).body("Code send to email " + loginDTO.getEmail());
     }
 
     @PostMapping("/2fa")
