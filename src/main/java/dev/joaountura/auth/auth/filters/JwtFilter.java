@@ -1,4 +1,4 @@
-package dev.joaountura.auth.auth;
+package dev.joaountura.auth.auth.filters;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import dev.joaountura.auth.auth.Cookies.CookieComponent;
 import dev.joaountura.auth.auth.Tokens.JwtToken.JWTComponent;
@@ -26,22 +26,19 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private JWTComponent jwtComponent;
 
+    @Autowired
+    private FilterServices filterServices;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-      Optional<Cookie> cookie = Arrays.stream(cookies)
-              .filter(cookie1 -> Objects.equals(cookie1.getName(), CookieComponent.cookieJWTName)).findFirst();
+       Cookie cookie = filterServices.findCookie(request, CookieComponent.cookieJWTName);
 
-      if (cookie.isEmpty()){
-          filterChain.doFilter(request, response);
-          return;
-      }
+       if(cookie == null){
+           filterChain.doFilter(request, response);
+           return;
+       }
 
-      DecodedJWT decodedJWT = jwtComponent.verifyAndDecode(cookie.get().getValue());
+      DecodedJWT decodedJWT = jwtComponent.verifyAndDecode(cookie.getValue());
 
       jwtComponent.verifyExpiration(decodedJWT);
 
@@ -54,6 +51,13 @@ public class JwtFilter extends OncePerRequestFilter {
       SecurityContextHolder.getContext().setAuthentication(auth);
       filterChain.doFilter(request, response);
 
+
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request){
+
+        return request.getRequestURI().startsWith("/login/2fa") || request.getRequestURI().startsWith("/auth/refresh");
 
     }
 }

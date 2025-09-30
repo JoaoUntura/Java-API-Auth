@@ -75,9 +75,9 @@ public class LoginServices {
         twoFAServices.sendTwoFaCode(users);
     }
 
-    public Users validateTwoFaAndReturnUser(String code, String twoFaCookie) throws Exception {
-        DecodedJWT decodedJWT = twoFAServices.verifyAndDecode(twoFaCookie);
-        Users user = userServices.findUserByUUID(UUID.fromString(decodedJWT.getSubject()));
+    public Users validateTwoFaAndReturnUser(String code, String userUUID) throws Exception {
+
+        Users user = userServices.findUserByUUID(UUID.fromString(userUUID));
         if (user == null) throw new ServletException("User not Found");
         twoFAServices.compareTwoFaCodes(user, code);
         return user;

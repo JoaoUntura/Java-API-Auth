@@ -45,9 +45,8 @@ public class RefreshTokenComponent extends TokenAbstract {
 
     }
 
-    public Users verifyRefreshTokenAndGetUser(String token) throws Exception {
+    public Users verifyRefreshTokenAndGetUser(DecodedJWT decodedJWT) throws Exception {
 
-        DecodedJWT decodedJWT = super.verifyAndDecode(token);
 
         UUID userUUID = UUID.fromString(decodedJWT.getSubject());
 

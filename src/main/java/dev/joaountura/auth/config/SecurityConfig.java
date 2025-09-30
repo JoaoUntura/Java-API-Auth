@@ -1,6 +1,8 @@
 package dev.joaountura.auth.config;
 
-import dev.joaountura.auth.auth.JwtFilter;
+import dev.joaountura.auth.auth.filters.JwtFilter;
+import dev.joaountura.auth.auth.filters.RefreshFilter;
+import dev.joaountura.auth.auth.filters.TwofaFilter;
 import dev.joaountura.auth.user.models.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,10 +27,11 @@ public class SecurityConfig {
     @Autowired
     private JwtFilter jwtFilter;
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder(12);
-    }
+    @Autowired
+    private TwofaFilter twofaFilter;
+
+    @Autowired
+    private RefreshFilter refreshFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -38,12 +41,13 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST,"/login").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/user").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/auth/refresh").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/login/2fa").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/user").hasRole(Roles.admin.toString())
                         .anyRequest().authenticated()
                 )
+                .addFilterBefore(twofaFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(refreshFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
 

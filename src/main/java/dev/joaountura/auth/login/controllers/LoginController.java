@@ -3,6 +3,7 @@ import dev.joaountura.auth.auth.Cookies.CookieComponent;
 import dev.joaountura.auth.auth.DeviceFingerPrint.DeviceFingerPrintServices;
 import dev.joaountura.auth.login.models.Login2FADTO;
 import dev.joaountura.auth.login.models.LoginDTO;
+import dev.joaountura.auth.login.models.LoginResponseDTO;
 import dev.joaountura.auth.login.services.LoginAttemptService;
 import dev.joaountura.auth.login.services.LoginServices;
 import dev.joaountura.auth.user.models.Users;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Enumeration;
@@ -33,7 +35,7 @@ public class LoginController {
 
 
     @PostMapping
-    public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) throws ServletException {
         String fingerPrint = loginServices.generateFingerPrint(request);
 
         loginAttemptService.checkAttemptsByFingerPrint(fingerPrint);
@@ -48,15 +50,13 @@ public class LoginController {
         response.addCookie(twoFaCookie);
 
 
-        return ResponseEntity.status(HttpStatus.OK).body("Code send to email " + loginDTO.getEmail());
+        return ResponseEntity.status(HttpStatus.OK).body(new LoginResponseDTO("2fa Code send to email " + loginDTO.getEmail()));
     }
 
     @PostMapping("/2fa")
-    public ResponseEntity<String> login2fa(@RequestBody Login2FADTO login2FADTO, @CookieValue(name=CookieComponent.cookieTwoFaName,required = true) Cookie twoFaCookie, HttpServletResponse response) throws Exception {
+    public ResponseEntity<LoginResponseDTO> login2fa(@RequestBody Login2FADTO login2FADTO, HttpServletResponse response, @AuthenticationPrincipal String userUUID) throws Exception {
 
-        if (twoFaCookie == null || twoFaCookie.getValue() == null) throw new ServletException("No 2fa Cookie");
-
-        Users user = loginServices.validateTwoFaAndReturnUser(login2FADTO.getCode(), twoFaCookie.getValue());
+        Users user = loginServices.validateTwoFaAndReturnUser(login2FADTO.getCode(), userUUID);
 
         String jwtToken = loginServices.generateUserJWTToken(user);
         String refreshToken = loginServices.generateUserRefreshToken(user);
@@ -67,7 +67,7 @@ public class LoginController {
         response.addCookie(cookieRefresh);
 
 
-        return ResponseEntity.status(HttpStatus.OK).body("Ok");
+        return ResponseEntity.status(HttpStatus.OK).body(new LoginResponseDTO("Success"));
     }
 
 }
