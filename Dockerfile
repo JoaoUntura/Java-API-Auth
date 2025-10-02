@@ -1,0 +1,7 @@
+FROM eclipse-temurin:21-jdk-alpine
+WORKDIR /auth
+COPY target/*.jar auth.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "auth.jar"]
+
+

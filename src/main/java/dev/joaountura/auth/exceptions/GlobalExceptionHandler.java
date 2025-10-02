@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionDto> handleGeneric(Exception ex) {
-        logger.error("Exception", ex.getMessage()); //
+        logger.error("Exception", ex); //
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ExceptionDto("Internal server error"));
     }
     @ExceptionHandler(HttpMessageNotReadableException.class)
