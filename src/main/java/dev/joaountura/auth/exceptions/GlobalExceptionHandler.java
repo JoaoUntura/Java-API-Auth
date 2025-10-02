@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ExceptionDto> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         logger.error("HttpMessageNotReadable", ex.getMessage()); //
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionDto("Invalid Body"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionDto("Invalid JSON Body"));
     }
 
 
